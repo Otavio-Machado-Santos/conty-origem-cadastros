@@ -1,0 +1,113 @@
+{
+  "challenge": 6,
+  "review": "B",
+  "reviewer": "/root/implementar_rastreio (Codex; independente da implementação do desafio 6)",
+  "reviewed_at": "2026-10-09T19:08:48Z",
+  "repository": "projetos/conty-origem-cadastros",
+  "base_sha": "2f8292b64ec67c0b8ec1bd584e22f7f17b02017a",
+  "candidate_sha": "3566be13b595e0b9480840d6aab6045db7cef39c",
+  "head_unchanged_after_review": true,
+  "working_tree_clean": true,
+  "scope": "Robustez, contrato de atribuição, idempotência, relógio, persistência e validação HTTP. Sem edição de código do candidato.",
+  "sources_read": [
+    "docs/enunciado.txt",
+    "README.md",
+    "package.json",
+    "src/attribution.js",
+    "src/storage.js",
+    "src/http.js",
+    "src/server.js",
+    "scripts/demo.mjs",
+    "test/attribution.test.js",
+    "test/http.test.js",
+    "test/persistence.test.js"
+  ],
+  "environment": {
+    "runtime": "Node.js v22.23.3",
+    "network": "Servidores HTTP reais em loopback e portas efêmeras; sem rede externa",
+    "persistence": "Diretórios temporários removidos após os probes; sem alterar o datastore do servidor de demonstração"
+  },
+  "checks": [
+    {
+      "command": "npm test",
+      "cwd": "projetos/conty-origem-cadastros",
+      "exit_code": 0,
+      "result": "34 testes passaram; zero falhas, cancelamentos ou skips."
+    },
+    {
+      "command": "npm run demo",
+      "cwd": "projetos/conty-origem-cadastros",
+      "exit_code": 0,
+      "result": "Fluxo HTTP real campanha → indicação → replay → cadastro → toque tardio → auditoria passou. Origem referral mantida, três toques auditáveis e exatamente um vencedor."
+    },
+    {
+      "command": "node --test revisoes/06-b-probes.mjs",
+      "cwd": ".",
+      "exit_code": 0,
+      "evidence": "revisoes/06-b-probes.txt",
+      "result": "3 probes independentes passaram: 256 sequências de atribuição; falha real de rename e restart; concorrência e entradas HTTP inválidas."
+    },
+    {
+      "command": "git diff --check",
+      "cwd": "projetos/conty-origem-cadastros",
+      "exit_code": 0,
+      "result": "Sem erros de whitespace."
+    },
+    {
+      "command": "git rev-parse HEAD && git status --short",
+      "cwd": "projetos/conty-origem-cadastros",
+      "exit_code": 0,
+      "result": "HEAD permanece no candidato e árvore permanece limpa."
+    }
+  ],
+  "requirements_verified": [
+    {
+      "requirement": "Primeira abertura fixa a janela, inclusive quando orgânica; reaberturas e reinícios não a deslocam.",
+      "result": "pass",
+      "evidence": "src/attribution.js:189-213; suíte de reopen e persistência; probe de 256 sequências e restart com windowMs diferente."
+    },
+    {
+      "requirement": "Horário autoritativo do servidor e proteção contra timestamps falsificados.",
+      "result": "pass",
+      "evidence": "src/attribution.js:114-122 e validação fields; suíte e probes rejeitam touchedAt/registeredAt e clock regressivo sem mutação."
+    },
+    {
+      "requirement": "Replay de clickId não cria outro toque; conflitos de fonte ou instalação são explícitos.",
+      "result": "pass",
+      "evidence": "src/attribution.js:147-167; suíte de click_conflict; 16 primeiras aberturas concorrentes produziram um toque e 15 duplicatas."
+    },
+    {
+      "requirement": "Regra last-touch e empate determinístico, com todas as razões auditáveis.",
+      "result": "pass",
+      "evidence": "src/attribution.js:9-11, 249-265 e 271-293; testes em ambas ordens de empate; 256 sequências verificadas contra cálculo independente."
+    },
+    {
+      "requirement": "Fora da janela e depois do cadastro não vencem; cadastro sem origem grava organicidade e motivo.",
+      "result": "pass",
+      "evidence": "Fronteira exata e +1 ms na suíte; probes verificam outside_attribution_window, signup_outside_attribution_window e after_signup, inclusive no mesmo milissegundo."
+    },
+    {
+      "requirement": "Cadastro consumido permanece imutável, inclusive com tentativas simultâneas e novos cliques.",
+      "result": "pass",
+      "evidence": "src/attribution.js:236-245; 16 signups concorrentes deram a mesma origem; troca de signupId retornou 409; toque tardio não mudou o vencedor."
+    },
+    {
+      "requirement": "Persistência conserva decisão e deduplicação; falha de escrita não altera memória parcialmente.",
+      "result": "pass",
+      "evidence": "src/attribution.js:125-130 e src/storage.js:32-41; erro real de rename preservou snapshot anterior e memória, nova tentativa e reload conservaram decisão/âncora."
+    },
+    {
+      "requirement": "Validação de tipo/entrada HTTP antes de aceitar mudanças.",
+      "result": "pass",
+      "evidence": "Suíte cobre mídia/JSON/tamanho chunked; probes rejeitam null, arrays, escalares, halves inválidas, timestamp extra e newline no installationId com HTTP 400."
+    }
+  ],
+  "findings": [],
+  "suggestions": [],
+  "limits": [
+    "Snapshot em um único processo, sem fsync e sem coordenação multiwriter: limitação explicitamente documentada e fora do contrato do desafio.",
+    "Não foi realizado deploy, integração real de deep links ou teste com clientes externos; a entrega usa HTTP local e dados sintéticos conforme escopo."
+  ],
+  "verdict": "approved",
+  "summary": "Nenhuma violação reproduzível do contrato ou bloqueador de robustez identificado no SHA fixado."
+}

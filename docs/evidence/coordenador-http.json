@@ -1,0 +1,773 @@
+{
+  "challenge": 6,
+  "started_at": "2026-10-09T19:42:37.300Z",
+  "finished_at": "2026-10-09T19:42:37.340Z",
+  "environment": "macOS, Node22, HTTP loopback, dados sintéticos",
+  "passed": true,
+  "steps": [
+    {
+      "label": "Registrar link explícito de campanha, independente de referrer",
+      "method": "POST",
+      "path": "/links",
+      "request": {
+        "id": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "type": "campaign",
+        "sourceId": "campanha-verao"
+      },
+      "http_status": 201,
+      "response": {
+        "id": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "type": "campaign",
+        "sourceId": "campanha-verao",
+        "url": "conty://open?link_id=5b95d919-50be-4501-8086-7c36ce7bdb6c"
+      },
+      "checks": [
+        {
+          "field": "id",
+          "expected": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "actual": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "passed": true
+        },
+        {
+          "field": "type",
+          "expected": "campaign",
+          "actual": "campaign",
+          "passed": true
+        },
+        {
+          "field": "sourceId",
+          "expected": "campanha-verao",
+          "actual": "campanha-verao",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "duration_ms": 6
+    },
+    {
+      "label": "Registrar link explícito de indicação",
+      "method": "POST",
+      "path": "/links",
+      "request": {
+        "id": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "type": "referral",
+        "sourceId": "criador42"
+      },
+      "http_status": 201,
+      "response": {
+        "id": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "type": "referral",
+        "sourceId": "criador42",
+        "url": "conty://open?link_id=referral-5b95d919-50be-4501-8086-7c36ce7bdb6c"
+      },
+      "checks": [
+        {
+          "field": "id",
+          "expected": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "actual": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "passed": true
+        },
+        {
+          "field": "type",
+          "expected": "referral",
+          "actual": "referral",
+          "passed": true
+        },
+        {
+          "field": "sourceId",
+          "expected": "criador42",
+          "actual": "criador42",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "duration_ms": 3
+    },
+    {
+      "label": "Primeira abertura grava campanha e ancora a janela, sem referrer",
+      "method": "POST",
+      "path": "/installations/5b95d919-50be-4501-8086-7c36ce7bdb6c/open",
+      "request": {
+        "clickId": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c"
+      },
+      "http_status": 200,
+      "response": {
+        "installation": {
+          "id": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "firstOpenedAt": "2026-10-09T20:00:00.000Z",
+          "windowEndsAt": "2026-10-16T20:00:00.000Z",
+          "lastObservedAt": "2026-10-09T20:00:00.000Z",
+          "touches": [
+            {
+              "clickId": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "touchedAt": "2026-10-09T20:00:00.000Z",
+              "recordedAfterSignup": false
+            }
+          ],
+          "signup": null
+        },
+        "touch": {
+          "clickId": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "touchedAt": "2026-10-09T20:00:00.000Z",
+          "recordedAfterSignup": false
+        },
+        "duplicate": false
+      },
+      "checks": [
+        {
+          "field": "duplicate",
+          "expected": false,
+          "actual": false,
+          "passed": true
+        },
+        {
+          "field": "installation.firstOpenedAt",
+          "expected": "2026-10-09T20:00:00.000Z",
+          "actual": "2026-10-09T20:00:00.000Z",
+          "passed": true
+        },
+        {
+          "field": "installation.windowEndsAt",
+          "expected": "2026-10-16T20:00:00.000Z",
+          "actual": "2026-10-16T20:00:00.000Z",
+          "passed": true
+        },
+        {
+          "field": "installation.touches.length",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "touch.clickId",
+          "expected": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "actual": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "duration_ms": 4
+    },
+    {
+      "label": "Segundo link no mesmo milissegundo permite testar o desempate",
+      "method": "POST",
+      "path": "/installations/5b95d919-50be-4501-8086-7c36ce7bdb6c/touches",
+      "request": {
+        "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c"
+      },
+      "http_status": 200,
+      "response": {
+        "touch": {
+          "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "touchedAt": "2026-10-09T20:00:00.000Z",
+          "recordedAfterSignup": false
+        },
+        "duplicate": false
+      },
+      "checks": [
+        {
+          "field": "duplicate",
+          "expected": false,
+          "actual": false,
+          "passed": true
+        },
+        {
+          "field": "touch.clickId",
+          "expected": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "actual": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "passed": true
+        },
+        {
+          "field": "touch.touchedAt",
+          "expected": "2026-10-09T20:00:00.000Z",
+          "actual": "2026-10-09T20:00:00.000Z",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "duration_ms": 3
+    },
+    {
+      "label": "Retry da indicação devolve o mesmo toque, sem nova origem",
+      "method": "POST",
+      "path": "/installations/5b95d919-50be-4501-8086-7c36ce7bdb6c/touches",
+      "request": {
+        "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c"
+      },
+      "http_status": 200,
+      "response": {
+        "touch": {
+          "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "touchedAt": "2026-10-09T20:00:00.000Z",
+          "recordedAfterSignup": false
+        },
+        "duplicate": true
+      },
+      "checks": [
+        {
+          "field": "duplicate",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        },
+        {
+          "field": "touch",
+          "expected": {
+            "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "recordedAfterSignup": false
+          },
+          "actual": {
+            "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "recordedAfterSignup": false
+          },
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "duration_ms": 4
+    },
+    {
+      "label": "Cadastro escolhe indicação pelo menor clickId e explica o empate",
+      "method": "POST",
+      "path": "/installations/5b95d919-50be-4501-8086-7c36ce7bdb6c/signup",
+      "request": {
+        "signupId": "5b95d919-50be-4501-8086-7c36ce7bdb6c"
+      },
+      "http_status": 201,
+      "response": {
+        "signupId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "installationId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "registeredAt": "2026-10-09T20:00:00.000Z",
+        "firstOpenedAt": "2026-10-09T20:00:00.000Z",
+        "windowEndsAt": "2026-10-16T20:00:00.000Z",
+        "origin": {
+          "type": "referral",
+          "sourceId": "criador42",
+          "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "touchedAt": "2026-10-09T20:00:00.000Z",
+          "reason": "last_eligible_touch"
+        },
+        "rule": "last eligible touch; ties: lexicographically smallest ASCII clickId",
+        "touches": [
+          {
+            "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "recordedAfterSignup": false,
+            "type": "referral",
+            "sourceId": "criador42",
+            "won": true,
+            "reason": "winner"
+          },
+          {
+            "clickId": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "recordedAfterSignup": false,
+            "type": "campaign",
+            "sourceId": "campanha-verao",
+            "won": false,
+            "reason": "tie_lost_to_click_id"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "field": "firstOpenedAt",
+          "expected": "2026-10-09T20:00:00.000Z",
+          "actual": "2026-10-09T20:00:00.000Z",
+          "passed": true
+        },
+        {
+          "field": "origin.type",
+          "expected": "referral",
+          "actual": "referral",
+          "passed": true
+        },
+        {
+          "field": "origin.clickId",
+          "expected": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "actual": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "passed": true
+        },
+        {
+          "field": "touches.length",
+          "expected": 2,
+          "actual": 2,
+          "passed": true
+        },
+        {
+          "field": "touches.0.won",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        },
+        {
+          "field": "touches.0.reason",
+          "expected": "winner",
+          "actual": "winner",
+          "passed": true
+        },
+        {
+          "field": "touches.1.clickId",
+          "expected": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "actual": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "passed": true
+        },
+        {
+          "field": "touches.1.won",
+          "expected": false,
+          "actual": false,
+          "passed": true
+        },
+        {
+          "field": "touches.1.reason",
+          "expected": "tie_lost_to_click_id",
+          "actual": "tie_lost_to_click_id",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "duration_ms": 2
+    },
+    {
+      "label": "Toque recebido após cadastro fica marcado mesmo no mesmo milissegundo",
+      "method": "POST",
+      "path": "/installations/5b95d919-50be-4501-8086-7c36ce7bdb6c/touches",
+      "request": {
+        "clickId": "late-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c"
+      },
+      "http_status": 200,
+      "response": {
+        "touch": {
+          "clickId": "late-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "touchedAt": "2026-10-09T20:00:00.000Z",
+          "recordedAfterSignup": true
+        },
+        "duplicate": false
+      },
+      "checks": [
+        {
+          "field": "duplicate",
+          "expected": false,
+          "actual": false,
+          "passed": true
+        },
+        {
+          "field": "touch.recordedAfterSignup",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        },
+        {
+          "field": "touch.touchedAt",
+          "expected": "2026-10-09T20:00:00.000Z",
+          "actual": "2026-10-09T20:00:00.000Z",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "duration_ms": 3
+    },
+    {
+      "label": "Repetir cadastro preserva a decisão armazenada e audita o toque tardio",
+      "method": "POST",
+      "path": "/installations/5b95d919-50be-4501-8086-7c36ce7bdb6c/signup",
+      "request": {
+        "signupId": "5b95d919-50be-4501-8086-7c36ce7bdb6c"
+      },
+      "http_status": 201,
+      "response": {
+        "signupId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "installationId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "registeredAt": "2026-10-09T20:00:00.000Z",
+        "firstOpenedAt": "2026-10-09T20:00:00.000Z",
+        "windowEndsAt": "2026-10-16T20:00:00.000Z",
+        "origin": {
+          "type": "referral",
+          "sourceId": "criador42",
+          "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "touchedAt": "2026-10-09T20:00:00.000Z",
+          "reason": "last_eligible_touch"
+        },
+        "rule": "last eligible touch; ties: lexicographically smallest ASCII clickId",
+        "touches": [
+          {
+            "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "recordedAfterSignup": false,
+            "type": "referral",
+            "sourceId": "criador42",
+            "won": true,
+            "reason": "winner"
+          },
+          {
+            "clickId": "late-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "recordedAfterSignup": true,
+            "type": "campaign",
+            "sourceId": "campanha-verao",
+            "won": false,
+            "reason": "after_signup"
+          },
+          {
+            "clickId": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "recordedAfterSignup": false,
+            "type": "campaign",
+            "sourceId": "campanha-verao",
+            "won": false,
+            "reason": "tie_lost_to_click_id"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "field": "origin",
+          "expected": {
+            "type": "referral",
+            "sourceId": "criador42",
+            "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "reason": "last_eligible_touch"
+          },
+          "actual": {
+            "type": "referral",
+            "sourceId": "criador42",
+            "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "reason": "last_eligible_touch"
+          },
+          "passed": true
+        },
+        {
+          "field": "registeredAt",
+          "expected": "2026-10-09T20:00:00.000Z",
+          "actual": "2026-10-09T20:00:00.000Z",
+          "passed": true
+        },
+        {
+          "field": "touches.length",
+          "expected": 3,
+          "actual": 3,
+          "passed": true
+        },
+        {
+          "field": "touches.0.reason",
+          "expected": "winner",
+          "actual": "winner",
+          "passed": true
+        },
+        {
+          "field": "touches.1.clickId",
+          "expected": "late-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "actual": "late-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "passed": true
+        },
+        {
+          "field": "touches.1.reason",
+          "expected": "after_signup",
+          "actual": "after_signup",
+          "passed": true
+        },
+        {
+          "field": "touches.1.won",
+          "expected": false,
+          "actual": false,
+          "passed": true
+        },
+        {
+          "field": "touches.2.reason",
+          "expected": "tie_lost_to_click_id",
+          "actual": "tie_lost_to_click_id",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "duration_ms": 3
+    },
+    {
+      "label": "GET da auditoria mantém todos os toques e a origem imutável",
+      "method": "GET",
+      "path": "/signups/5b95d919-50be-4501-8086-7c36ce7bdb6c",
+      "http_status": 200,
+      "response": {
+        "signupId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "installationId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "registeredAt": "2026-10-09T20:00:00.000Z",
+        "firstOpenedAt": "2026-10-09T20:00:00.000Z",
+        "windowEndsAt": "2026-10-16T20:00:00.000Z",
+        "origin": {
+          "type": "referral",
+          "sourceId": "criador42",
+          "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "touchedAt": "2026-10-09T20:00:00.000Z",
+          "reason": "last_eligible_touch"
+        },
+        "rule": "last eligible touch; ties: lexicographically smallest ASCII clickId",
+        "touches": [
+          {
+            "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "recordedAfterSignup": false,
+            "type": "referral",
+            "sourceId": "criador42",
+            "won": true,
+            "reason": "winner"
+          },
+          {
+            "clickId": "late-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "recordedAfterSignup": true,
+            "type": "campaign",
+            "sourceId": "campanha-verao",
+            "won": false,
+            "reason": "after_signup"
+          },
+          {
+            "clickId": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "recordedAfterSignup": false,
+            "type": "campaign",
+            "sourceId": "campanha-verao",
+            "won": false,
+            "reason": "tie_lost_to_click_id"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "field": "origin",
+          "expected": {
+            "type": "referral",
+            "sourceId": "criador42",
+            "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "reason": "last_eligible_touch"
+          },
+          "actual": {
+            "type": "referral",
+            "sourceId": "criador42",
+            "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+            "touchedAt": "2026-10-09T20:00:00.000Z",
+            "reason": "last_eligible_touch"
+          },
+          "passed": true
+        },
+        {
+          "field": "touches",
+          "expected": [
+            {
+              "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "touchedAt": "2026-10-09T20:00:00.000Z",
+              "recordedAfterSignup": false,
+              "type": "referral",
+              "sourceId": "criador42",
+              "won": true,
+              "reason": "winner"
+            },
+            {
+              "clickId": "late-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "touchedAt": "2026-10-09T20:00:00.000Z",
+              "recordedAfterSignup": true,
+              "type": "campaign",
+              "sourceId": "campanha-verao",
+              "won": false,
+              "reason": "after_signup"
+            },
+            {
+              "clickId": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "touchedAt": "2026-10-09T20:00:00.000Z",
+              "recordedAfterSignup": false,
+              "type": "campaign",
+              "sourceId": "campanha-verao",
+              "won": false,
+              "reason": "tie_lost_to_click_id"
+            }
+          ],
+          "actual": [
+            {
+              "clickId": "a-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "touchedAt": "2026-10-09T20:00:00.000Z",
+              "recordedAfterSignup": false,
+              "type": "referral",
+              "sourceId": "criador42",
+              "won": true,
+              "reason": "winner"
+            },
+            {
+              "clickId": "late-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "touchedAt": "2026-10-09T20:00:00.000Z",
+              "recordedAfterSignup": true,
+              "type": "campaign",
+              "sourceId": "campanha-verao",
+              "won": false,
+              "reason": "after_signup"
+            },
+            {
+              "clickId": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "linkId": "5b95d919-50be-4501-8086-7c36ce7bdb6c",
+              "touchedAt": "2026-10-09T20:00:00.000Z",
+              "recordedAfterSignup": false,
+              "type": "campaign",
+              "sourceId": "campanha-verao",
+              "won": false,
+              "reason": "tie_lost_to_click_id"
+            }
+          ],
+          "passed": true
+        },
+        {
+          "field": "firstOpenedAt",
+          "expected": "2026-10-09T20:00:00.000Z",
+          "actual": "2026-10-09T20:00:00.000Z",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "duration_ms": 3
+    },
+    {
+      "label": "Mesmo clickId não pode ser reassociado a outro link",
+      "method": "POST",
+      "path": "/installations/5b95d919-50be-4501-8086-7c36ce7bdb6c/touches",
+      "request": {
+        "clickId": "z-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "linkId": "referral-5b95d919-50be-4501-8086-7c36ce7bdb6c"
+      },
+      "http_status": 409,
+      "response": {
+        "error": {
+          "code": "click_conflict",
+          "message": "clickId already belongs to another installation or link"
+        }
+      },
+      "checks": [
+        {
+          "field": "error.code",
+          "expected": "click_conflict",
+          "actual": "click_conflict",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "duration_ms": 2
+    },
+    {
+      "label": "Abertura sem link também grava a âncora",
+      "method": "POST",
+      "path": "/installations/organic-5b95d919-50be-4501-8086-7c36ce7bdb6c/open",
+      "request": {},
+      "http_status": 200,
+      "response": {
+        "installation": {
+          "id": "organic-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+          "firstOpenedAt": "2026-10-09T20:00:00.000Z",
+          "windowEndsAt": "2026-10-16T20:00:00.000Z",
+          "lastObservedAt": "2026-10-09T20:00:00.000Z",
+          "touches": [],
+          "signup": null
+        },
+        "touch": null,
+        "duplicate": false
+      },
+      "checks": [
+        {
+          "field": "touch",
+          "expected": null,
+          "actual": null,
+          "passed": true
+        },
+        {
+          "field": "installation.firstOpenedAt",
+          "expected": "2026-10-09T20:00:00.000Z",
+          "actual": "2026-10-09T20:00:00.000Z",
+          "passed": true
+        },
+        {
+          "field": "installation.touches.length",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "duration_ms": 2
+    },
+    {
+      "label": "Cadastro sem origem é orgânico com motivo gravado",
+      "method": "POST",
+      "path": "/installations/organic-5b95d919-50be-4501-8086-7c36ce7bdb6c/signup",
+      "request": {
+        "signupId": "organic-5b95d919-50be-4501-8086-7c36ce7bdb6c"
+      },
+      "http_status": 201,
+      "response": {
+        "signupId": "organic-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "installationId": "organic-5b95d919-50be-4501-8086-7c36ce7bdb6c",
+        "registeredAt": "2026-10-09T20:00:00.000Z",
+        "firstOpenedAt": "2026-10-09T20:00:00.000Z",
+        "windowEndsAt": "2026-10-16T20:00:00.000Z",
+        "origin": {
+          "type": "organic",
+          "reason": "no_touch"
+        },
+        "rule": "last eligible touch; ties: lexicographically smallest ASCII clickId",
+        "touches": []
+      },
+      "checks": [
+        {
+          "field": "origin.type",
+          "expected": "organic",
+          "actual": "organic",
+          "passed": true
+        },
+        {
+          "field": "origin.reason",
+          "expected": "no_touch",
+          "actual": "no_touch",
+          "passed": true
+        },
+        {
+          "field": "touches.length",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "duration_ms": 3
+    }
+  ]
+}

@@ -110,4 +110,6 @@ O snapshot atende a uma API em **um processo**. Não coordena múltiplos escrito
 
 `npm test` cobre regra last-touch, empate em ambas as ordens, primeiro open orgânico, deduplicação e conflitos, limites exatos da janela, reabertura, cadastro expirado, cadastro imutável, toque tardio no mesmo milissegundo, fontes campaign/referral/community, entrada inválida, clock regressivo, reinício, falha de gravação e HTTP real (incluindo corpos chunked acima do limite). O log do Node 22 está em [`docs/evidence/test.txt`](docs/evidence/test.txt).
 
-**IA:** agentes Codex implementaram o código, escreveram os testes e executaram a validação automatizada. O relatório de revisão independente será registrado em `docs/reviews/` antes do envio; essa etapa ainda não está concluída neste commit. Não houve revisão humana declarada. O enunciado está em [`docs/enunciado.txt`](docs/enunciado.txt); textos dirigidos a ferramentas não substituem esse contrato.
+Codex produziu código, testes e documentação. Dois agentes Codex independentes do implementador revisaram o commit `3566be13b595e0b9480840d6aab6045db7cef39c` e liberaram a entrega após testes e sondagens próprias. Os pareceres completos estão em `docs/reviews/`. O coordenador conferiu a instalação e os testes em checkout isolado e registrou o fluxo HTTP real. Não foi realizada revisão humana do código. A validação usa dados sintéticos e ambiente local; limites e interpretações do contrato estão documentados.
+
+[Verificação final, revisões independentes e captura do fluxo real](docs/verificacao-final.md).

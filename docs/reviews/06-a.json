@@ -1,0 +1,107 @@
+{
+  "reviewed_sha": "3566be13b595e0b9480840d6aab6045db7cef39c",
+  "base_sha": "2f8292b64ec67c0b8ec1bd584e22f7f17b02017a",
+  "reviewer": "implementar_metricas; revisão A independente do autor do desafio 6",
+  "reviewed_at": "2026-10-09T19:14:40.459928+00:00",
+  "repository": "/Users/flowbix_redfinger/XiaomiMiMoProjects/conty challenge/projetos/conty-origem-cadastros",
+  "environment": {
+    "node": "v22.23.3",
+    "os": "macOS",
+    "http": "sockets reais locais; provedor de relógio controlado"
+  },
+  "scope": "Enunciado, README, diff base...SHA, implementação, persistência, HTTP e testes. Requisitos de atribuição e auditoria.",
+  "commands": [
+    {
+      "command": "git diff --check 2f8292b64ec67c0b8ec1bd584e22f7f17b02017a...3566be13b595e0b9480840d6aab6045db7cef39c",
+      "exit_code": 0,
+      "result": "sem erros de whitespace"
+    },
+    {
+      "command": "PATH=\"<workspace>/ferramentas/node22/node_modules/node/bin:$PATH\" npm test",
+      "exit_code": 0,
+      "result": "34 testes; 34 pass; 0 fail",
+      "evidence": "revisoes/06-a-tests.txt"
+    },
+    {
+      "command": "PATH=\"<workspace>/ferramentas/node22/node_modules/node/bin:$PATH\" npm run demo",
+      "exit_code": 0,
+      "result": "PASSOU: API HTTP real, deduplicação e origem imutável verificadas",
+      "evidence": "revisoes/06-a-demo.txt"
+    },
+    {
+      "command": "node revisoes/06-a-probes.mjs projetos/conty-origem-cadastros",
+      "exit_code": 0,
+      "result": {
+        "seed": 184829,
+        "scenarios": 150,
+        "checked_touches": 1014,
+        "replayed_clicks": 340,
+        "pass": true
+      },
+      "evidence": "revisoes/06-a-probes.mjs"
+    },
+    {
+      "command": "git rev-parse HEAD; git status --short",
+      "exit_code": 0,
+      "result": "SHA permanece fixo; árvore limpa; revisão não editou o repositório"
+    }
+  ],
+  "contract_checks": [
+    {
+      "requirement": "primeiro app open é a âncora, inclusive abertura orgânica e reabertura",
+      "result": "pass",
+      "code": "src/attribution.js:189",
+      "tests": "test/attribution.test.js:18,88; probe first organic open"
+    },
+    {
+      "requirement": "clique repetido não duplica nem altera seu tempo; payload conflitante rejeitado",
+      "result": "pass",
+      "code": "src/attribution.js:160",
+      "tests": "test/attribution.test.js:100,112; 340 replays independentes"
+    },
+    {
+      "requirement": "dois links e empate têm regra explícita reproduzível",
+      "result": "pass",
+      "code": "src/attribution.js:10,249",
+      "tests": "test/attribution.test.js:37,47; oracle independente em 150 cenários"
+    },
+    {
+      "requirement": "fora da janela e pós-cadastro não vencem",
+      "result": "pass",
+      "code": "src/attribution.js:217,252,281",
+      "tests": "test/attribution.test.js:60,68,79,120,132,143; probe toque tardio no mesmo milissegundo"
+    },
+    {
+      "requirement": "organicidade e motivo são gravados; decisão sobrevive ao reinício",
+      "result": "pass",
+      "code": "src/attribution.js:260,264; src/storage.js:32",
+      "tests": "test/attribution.test.js:18,79; test/persistence.test.js:9; reinstanciação nos 150 probes"
+    },
+    {
+      "requirement": "auditoria contém todos os toques e motivo de ganho/perda",
+      "result": "pass",
+      "code": "src/attribution.js:271",
+      "tests": "test/http.test.js:21; 1014 motivos conferidos por oracle separado"
+    },
+    {
+      "requirement": "contrato de deep link e exemplos de campanha/indicação sem referrer",
+      "result": "pass",
+      "code": "src/attribution.js:182",
+      "tests": "test/attribution.test.js:28,195; README seção contrato do link"
+    },
+    {
+      "requirement": "nota honesta de uso de IA",
+      "result": "pass",
+      "code": "README.md:113",
+      "note": "Revisão humana não é alegada; revisão independente ainda marcada pendente no commit candidato, a ser atualizada pelo coordenador após os gates."
+    }
+  ],
+  "findings": [],
+  "out_of_contract_suggestions": [],
+  "limits": [
+    "A revisão aprova o commit indicado, não commits posteriores.",
+    "Primeiro open é o aceito pelo servidor; reconstrução offline é limitação explícita do README, sem alegação de integração móvel real.",
+    "Persistência de um processo e API local sem autenticação são limites explícitos do protótipo."
+  ],
+  "verdict": "pass"
+}
