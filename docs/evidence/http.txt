@@ -1,0 +1,162 @@
+
+> conty-origem-cadastros@1.0.0 demo
+> node scripts/demo.mjs
+
+POST /links → 201
+{
+  "id": "campanha-verao",
+  "type": "campaign",
+  "sourceId": "verao2026",
+  "url": "conty://open?link_id=campanha-verao"
+}
+POST /links → 201
+{
+  "id": "indicacao-criador42",
+  "type": "referral",
+  "sourceId": "criador42",
+  "url": "conty://open?link_id=indicacao-criador42"
+}
+POST /installations/app-1/open → 200
+{
+  "installation": {
+    "id": "app-1",
+    "firstOpenedAt": "2026-06-01T12:00:00.000Z",
+    "windowEndsAt": "2026-06-08T12:00:00.000Z",
+    "lastObservedAt": "2026-06-01T12:00:00.000Z",
+    "touches": [
+      {
+        "clickId": "click-campanha",
+        "linkId": "campanha-verao",
+        "touchedAt": "2026-06-01T12:00:00.000Z",
+        "recordedAfterSignup": false
+      }
+    ],
+    "signup": null
+  },
+  "touch": {
+    "clickId": "click-campanha",
+    "linkId": "campanha-verao",
+    "touchedAt": "2026-06-01T12:00:00.000Z",
+    "recordedAfterSignup": false
+  },
+  "duplicate": false
+}
+POST /installations/app-1/touches → 200
+{
+  "touch": {
+    "clickId": "click-indicacao",
+    "linkId": "indicacao-criador42",
+    "touchedAt": "2026-06-02T12:00:00.000Z",
+    "recordedAfterSignup": false
+  },
+  "duplicate": false
+}
+POST /installations/app-1/touches → 200
+{
+  "touch": {
+    "clickId": "click-indicacao",
+    "linkId": "indicacao-criador42",
+    "touchedAt": "2026-06-02T12:00:00.000Z",
+    "recordedAfterSignup": false
+  },
+  "duplicate": true
+}
+POST /installations/app-1/signup → 201
+{
+  "signupId": "creator-1",
+  "installationId": "app-1",
+  "registeredAt": "2026-06-03T12:00:00.000Z",
+  "firstOpenedAt": "2026-06-01T12:00:00.000Z",
+  "windowEndsAt": "2026-06-08T12:00:00.000Z",
+  "origin": {
+    "type": "referral",
+    "sourceId": "criador42",
+    "linkId": "indicacao-criador42",
+    "clickId": "click-indicacao",
+    "touchedAt": "2026-06-02T12:00:00.000Z",
+    "reason": "last_eligible_touch"
+  },
+  "rule": "last eligible touch; ties: lexicographically smallest ASCII clickId",
+  "touches": [
+    {
+      "clickId": "click-campanha",
+      "linkId": "campanha-verao",
+      "touchedAt": "2026-06-01T12:00:00.000Z",
+      "recordedAfterSignup": false,
+      "type": "campaign",
+      "sourceId": "verao2026",
+      "won": false,
+      "reason": "superseded_by_more_recent_touch"
+    },
+    {
+      "clickId": "click-indicacao",
+      "linkId": "indicacao-criador42",
+      "touchedAt": "2026-06-02T12:00:00.000Z",
+      "recordedAfterSignup": false,
+      "type": "referral",
+      "sourceId": "criador42",
+      "won": true,
+      "reason": "winner"
+    }
+  ]
+}
+POST /installations/app-1/touches → 200
+{
+  "touch": {
+    "clickId": "click-tardio",
+    "linkId": "campanha-verao",
+    "touchedAt": "2026-06-03T12:00:00.001Z",
+    "recordedAfterSignup": true
+  },
+  "duplicate": false
+}
+GET /signups/creator-1 → 200
+{
+  "signupId": "creator-1",
+  "installationId": "app-1",
+  "registeredAt": "2026-06-03T12:00:00.000Z",
+  "firstOpenedAt": "2026-06-01T12:00:00.000Z",
+  "windowEndsAt": "2026-06-08T12:00:00.000Z",
+  "origin": {
+    "type": "referral",
+    "sourceId": "criador42",
+    "linkId": "indicacao-criador42",
+    "clickId": "click-indicacao",
+    "touchedAt": "2026-06-02T12:00:00.000Z",
+    "reason": "last_eligible_touch"
+  },
+  "rule": "last eligible touch; ties: lexicographically smallest ASCII clickId",
+  "touches": [
+    {
+      "clickId": "click-campanha",
+      "linkId": "campanha-verao",
+      "touchedAt": "2026-06-01T12:00:00.000Z",
+      "recordedAfterSignup": false,
+      "type": "campaign",
+      "sourceId": "verao2026",
+      "won": false,
+      "reason": "superseded_by_more_recent_touch"
+    },
+    {
+      "clickId": "click-indicacao",
+      "linkId": "indicacao-criador42",
+      "touchedAt": "2026-06-02T12:00:00.000Z",
+      "recordedAfterSignup": false,
+      "type": "referral",
+      "sourceId": "criador42",
+      "won": true,
+      "reason": "winner"
+    },
+    {
+      "clickId": "click-tardio",
+      "linkId": "campanha-verao",
+      "touchedAt": "2026-06-03T12:00:00.001Z",
+      "recordedAfterSignup": true,
+      "type": "campaign",
+      "sourceId": "verao2026",
+      "won": false,
+      "reason": "after_signup"
+    }
+  ]
+}
+PASSOU: API HTTP real, deduplicação e origem imutável verificadas.

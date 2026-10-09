@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Origem do cadastro · Conty</title>
+<style>
+  :root { color-scheme: light; font-family: system-ui, sans-serif; color: #162831; background: #edf3f2; }
+  body { max-width: 1060px; margin: 0 auto; padding: 42px 24px; }
+  header { border-bottom: 2px solid #bed2d0; padding-bottom: 20px; }
+  .label { text-transform: uppercase; letter-spacing: .13em; font-size: 12px; color: #476663; }
+  h1 { font-size: 34px; margin: 12px 0; }
+  p { line-height: 1.6; }
+  button { font: inherit; padding: 12px 18px; background: #155e59; color: white; border: 0; border-radius: 6px; cursor: pointer; }
+  button:disabled { opacity: .6; cursor: wait; }
+  #status { font-weight: 600; color: #155e59; }
+  pre { background: #fff; border: 1px solid #bed2d0; border-radius: 6px; padding: 20px; overflow: auto; white-space: pre-wrap; font-size: 13px; line-height: 1.5; }
+  .steps { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
+  .steps span { border: 1px solid #bed2d0; border-radius: 4px; padding: 8px 12px; background: white; }
+</style>
+<header><div class="label">Desafio 6 · API executada localmente</div><h1>Origem do cadastro no app</h1>
+<p>A primeira abertura inicia a janela de 7 dias. O último toque válido vence; o cadastro preserva a decisão e explica cada toque.</p></header>
+<div class="steps"><span>1. Campanha</span><span>2. Indicação</span><span>3. Cadastro</span><span>4. Toque tardio</span><span>5. Auditoria</span></div>
+<button id="run">Executar fluxo real da API</button>
+<p id="status">Aguardando execução. Cada fluxo usa identificadores novos.</p>
+<pre id="output">Os resultados HTTP aparecerão aqui.</pre>
+<script>
+  const button = document.querySelector('#run');
+  const status = document.querySelector('#status');
+  const output = document.querySelector('#output');
+  button.onclick = async () => {
+    button.disabled = true;
+    output.textContent = '';
+    const suffix = crypto.randomUUID();
+    const installation = `demo-${suffix}`;
+    const signup = `signup-${suffix}`;
+    async function post(path, body) {
+      const response = await fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(JSON.stringify(result));
+      return result;
+    }
+    try {
+      status.textContent = 'Criando links de campanha e indicação…';
+      await post('/links', { id: `campanha-${suffix}`, type: 'campaign', sourceId: 'verao2026' });
+      await post('/links', { id: `indicacao-${suffix}`, type: 'referral', sourceId: 'criador42' });
+      await post(`/installations/${installation}/open`, { clickId: `click-campanha-${suffix}`, linkId: `campanha-${suffix}` });
+      await new Promise(resolve => setTimeout(resolve, 30));
+      status.textContent = 'Registrando indicação e consumindo origem no cadastro…';
+      await post(`/installations/${installation}/touches`, { clickId: `click-indicacao-${suffix}`, linkId: `indicacao-${suffix}` });
+      const registered = await post(`/installations/${installation}/signup`, { signupId: signup });
+      await post(`/installations/${installation}/touches`, { clickId: `click-tardio-${suffix}`, linkId: `campanha-${suffix}` });
+      const response = await fetch(`/signups/${signup}`);
+      const audit = await response.json();
+      if (!response.ok) throw new Error(JSON.stringify(audit));
+      if (audit.origin.type !== 'referral' || audit.origin.clickId !== registered.origin.clickId
+        || audit.touches.length !== 3 || audit.touches.filter(touch => touch.won).length !== 1
+        || audit.touches.at(-1).reason !== 'after_signup') throw new Error('Auditoria não corresponde ao fluxo');
+      status.textContent = 'Concluído: indicação venceu; campanha anterior perdeu; toque após cadastro foi excluído.';
+      output.textContent = JSON.stringify({ httpStatus: response.status, firstDecision: registered.origin, audit }, null, 2);
+    } catch (error) { status.textContent = `Falha: ${error.message}`; }
+    finally { button.disabled = false; }
+  };
+</script>
+</html>

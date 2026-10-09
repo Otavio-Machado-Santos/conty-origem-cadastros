@@ -1,0 +1,218 @@
+
+> conty-origem-cadastros@1.0.0 test
+> node --test
+
+TAP version 13
+# Subtest: organic first open persists anchor and organic reason at signup
+ok 1 - organic first open persists anchor and organic reason at signup
+  ---
+  duration_ms: 3.917292
+  type: 'test'
+  ...
+# Subtest: open with explicit link payload works without referrer
+ok 2 - open with explicit link payload works without referrer
+  ---
+  duration_ms: 1.100709
+  type: 'test'
+  ...
+# Subtest: two links before signup use last eligible touch and explain earlier loss
+ok 3 - two links before signup use last eligible touch and explain earlier loss
+  ---
+  duration_ms: 0.21375
+  type: 'test'
+  ...
+# Subtest: timestamp ties choose smallest ASCII clickId regardless of arrival order
+ok 4 - timestamp ties choose smallest ASCII clickId regardless of arrival order
+  ---
+  duration_ms: 0.917791
+  type: 'test'
+  ...
+# Subtest: window includes exact final millisecond, both touch and signup
+ok 5 - window includes exact final millisecond, both touch and signup
+  ---
+  duration_ms: 0.745833
+  type: 'test'
+  ...
+# Subtest: one millisecond beyond the window cannot win and stores organic expiry
+ok 6 - one millisecond beyond the window cannot win and stores organic expiry
+  ---
+  duration_ms: 0.622917
+  type: 'test'
+  ...
+# Subtest: an old valid touch expires if signup happens after the anchored window
+ok 7 - an old valid touch expires if signup happens after the anchored window
+  ---
+  duration_ms: 0.250167
+  type: 'test'
+  ...
+# Subtest: reopen never resets first-open anchor, including an organic first opening
+ok 8 - reopen never resets first-open anchor, including an organic first opening
+  ---
+  duration_ms: 0.400875
+  type: 'test'
+  ...
+# Subtest: same click replay is globally idempotent without extending its time
+ok 9 - same click replay is globally idempotent without extending its time
+  ---
+  duration_ms: 0.348208
+  type: 'test'
+  ...
+# Subtest: same click with different payload or installation is rejected
+ok 10 - same click with different payload or installation is rejected
+  ---
+  duration_ms: 0.522041
+  type: 'test'
+  ...
+# Subtest: touches after signup are visible in audit but cannot replace original winner
+ok 11 - touches after signup are visible in audit but cannot replace original winner
+  ---
+  duration_ms: 0.223291
+  type: 'test'
+  ...
+# Subtest: same-millisecond touch received after signup still loses
+ok 12 - same-millisecond touch received after signup still loses
+  ---
+  duration_ms: 0.117833
+  type: 'test'
+  ...
+# Subtest: post-signup link cannot change an organic signup either
+ok 13 - post-signup link cannot change an organic signup either
+  ---
+  duration_ms: 0.128625
+  type: 'test'
+  ...
+# Subtest: signup retries retain stored origin and ids cannot be reassigned
+ok 14 - signup retries retain stored origin and ids cannot be reassigned
+  ---
+  duration_ms: 0.128625
+  type: 'test'
+  ...
+# Subtest: clients cannot forge first-open dates, timestamps or referrer metadata
+ok 15 - clients cannot forge first-open dates, timestamps or referrer metadata
+  ---
+  duration_ms: 0.82175
+  type: 'test'
+  ...
+# Subtest: touch/signup before first open are rejected without inventing an anchor
+ok 16 - touch/signup before first open are rejected without inventing an anchor
+  ---
+  duration_ms: 0.087042
+  type: 'test'
+  ...
+# Subtest: invalid and regressing server clocks do not mutate state
+ok 17 - invalid and regressing server clocks do not mutate state
+  ---
+  duration_ms: 0.114083
+  type: 'test'
+  ...
+# Subtest: link ids cannot change creator or kind after attribution
+ok 18 - link ids cannot change creator or kind after attribution
+  ---
+  duration_ms: 0.062375
+  type: 'test'
+  ...
+# Subtest: inputs reject missing halves, unknown links, arrays and dangerous ids
+ok 19 - inputs reject missing halves, unknown links, arrays and dangerous ids
+  ---
+  duration_ms: 0.113
+  type: 'test'
+  ...
+# Subtest: community links participate in the same explicit rule
+ok 20 - community links participate in the same explicit rule
+  ---
+  duration_ms: 0.305584
+  type: 'test'
+  ...
+# Subtest: returned objects cannot mutate stored history or immutable origin
+ok 21 - returned objects cannot mutate stored history or immutable origin
+  ---
+  duration_ms: 0.151833
+  type: 'test'
+  ...
+# Subtest: failed persistence does not partially commit a mutation
+ok 22 - failed persistence does not partially commit a mutation
+  ---
+  duration_ms: 0.130458
+  type: 'test'
+  ...
+# Subtest: configuration is bounded and old installations retain their original window
+ok 23 - configuration is bounded and old installations retain their original window
+  ---
+  duration_ms: 0.285
+  type: 'test'
+  ...
+# Subtest: date overflow is rejected at first open
+ok 24 - date overflow is rejected at first open
+  ---
+  duration_ms: 0.066041
+  type: 'test'
+  ...
+# Subtest: real HTTP flow creates links, opens app, deduplicates click, signs up and audits
+ok 25 - real HTTP flow creates links, opens app, deduplicates click, signs up and audits
+  ---
+  duration_ms: 36.60625
+  type: 'test'
+  ...
+# Subtest: HTTP organic signup has a persisted reason and after-signup link cannot change it
+ok 26 - HTTP organic signup has a persisted reason and after-signup link cannot change it
+  ---
+  duration_ms: 10.749708
+  type: 'test'
+  ...
+# Subtest: HTTP rejects forged dates, invalid JSON, wrong media type and missing first open
+ok 27 - HTTP rejects forged dates, invalid JSON, wrong media type and missing first open
+  ---
+  duration_ms: 6.410333
+  type: 'test'
+  ...
+# Subtest: HTTP body size limit, path validation and unknown route have explicit errors
+ok 28 - HTTP body size limit, path validation and unknown route have explicit errors
+  ---
+  duration_ms: 6.61225
+  type: 'test'
+  ...
+# Subtest: HTTP returns explicit conflict for click-id reuse on a different source
+ok 29 - HTTP returns explicit conflict for click-id reuse on a different source
+  ---
+  duration_ms: 6.548625
+  type: 'test'
+  ...
+# Subtest: chunked oversized bodies get an HTTP 413 response without a socket reset
+ok 30 - chunked oversized bodies get an HTTP 413 response without a socket reset
+  ---
+  duration_ms: 3.893917
+  type: 'test'
+  ...
+# Subtest: browser demo is served from the same origin as the actual API
+ok 31 - browser demo is served from the same origin as the actual API
+  ---
+  duration_ms: 2.042125
+  type: 'test'
+  ...
+# Subtest: restart preserves first open, click deduplication, original origin and late audit
+ok 32 - restart preserves first open, click deduplication, original origin and late audit
+  ---
+  duration_ms: 8.200875
+  type: 'test'
+  ...
+# Subtest: corrupted or unsupported persisted state fails startup instead of resetting attribution
+ok 33 - corrupted or unsupported persisted state fails startup instead of resetting attribution
+  ---
+  duration_ms: 2.602792
+  type: 'test'
+  ...
+# Subtest: missing store parents are created only when a valid mutation is committed
+ok 34 - missing store parents are created only when a valid mutation is committed
+  ---
+  duration_ms: 1.557666
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 164.586625

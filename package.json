@@ -1,0 +1,13 @@
+{
+  "name": "conty-origem-cadastros",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Atribuição auditável de cadastros, sem depender de referrer",
+  "type": "module",
+  "engines": { "node": "22.x" },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test",
+    "demo": "node scripts/demo.mjs"
+  }
+}
