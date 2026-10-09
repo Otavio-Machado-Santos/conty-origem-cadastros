@@ -1,0 +1,67 @@
+{
+  "id": 6,
+  "reviewed_sha": "3566be13b595e0b9480840d6aab6045db7cef39c",
+  "publication_sha": "aea94e294bfce9b1bfd90ee12cb8408e94504728",
+  "verdict": "approved",
+  "summary": "origem-cadastros: o link carrega só link_id, e tipo e sourceId ficam imutáveis no servidor (409). A janela de 7 dias é inclusiva, fixada na primeira abertura, e reabrir não a reinicia. Vence o último toque elegível; no empate, o menor clickId ASCII. Orgânico grava motivo (no_touch ou attribution_window_expired). O clickId é idempotente e dá 409 em outro link ou instalação. Toque após o cadastro é guardado e não vence. A auditoria lista todos os toques com won e reason.",
+  "tests": [
+    {
+      "command": "npm test",
+      "exit_code": 0,
+      "result": "34/34"
+    },
+    {
+      "command": "npm run demo",
+      "exit_code": 0,
+      "result": "PASSOU; saída idêntica a docs/evidence/http.txt"
+    },
+    {
+      "command": "hash de blob vs diff",
+      "exit_code": 0,
+      "result": "13/13 MATCH; README só na nota de IA (linha 113)"
+    },
+    {
+      "command": "curl fluxo + 38 bordas (porta 43606; 3006 ocupada por processo alheio)",
+      "exit_code": 0,
+      "result": "Todos os status esperados (201/200/409/404/400/415/413), unknown_field, path traversal 400"
+    },
+    {
+      "command": "reinício com ATTRIBUTION_WINDOW_MS=1500",
+      "exit_code": 0,
+      "result": "Estado preservado; expiração real gera organic/attribution_window_expired"
+    },
+    {
+      "command": "node probe.mjs",
+      "exit_code": 0,
+      "result": "ok=10 bad=0 (empates, mesmo ms, borda da janela, snapshot adulterado rejeitado)"
+    }
+  ],
+  "findings": [
+    {
+      "priority": "P3",
+      "file": "src/http.js",
+      "line": 56,
+      "title": "Repetições idempotentes de POST /links e /signup respondem 201",
+      "details": "O corpo está correto; só o status é impreciso (http.js:56 e 63). O contrato não exige.",
+      "reproduction": "POST /links {id:'c1',type:'community',sourceId:'club'} duas vezes",
+      "expected": "Opcional: 200 na repetição",
+      "actual": "201 nas duas"
+    }
+  ],
+  "limits": [
+    "Sem git e sem rede: publication_sha e repositório público não verificados; recibo local consistente.",
+    "O botão de public/index.html não foi executado em navegador.",
+    "Empates no mesmo ms foram verificados só com relógio injetado."
+  ],
+  "approval_basis": "Os cinco critérios do contrato foram reproduzidos, os testes exigidos existem e a nota de IA está presente. Só há P3.",
+  "review_provenance": {
+    "round": 1,
+    "session_id": "86ab9e40-d8b8-4b16-b157-bacf36407c05",
+    "review_file": "revisoes/claude-opus55/parecer-primeira-rodada.json",
+    "review_sha256": "ac93c4aacab182c9a54f6e9c37293083de93e033af03f98e762648d629d8dead",
+    "previous_adjustment": null
+  },
+  "model": "claude-opus-5-5",
+  "review_kind": "independent_subagent_review",
+  "reviewed_after_conty_registration": true
+}
